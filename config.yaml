@@ -1,0 +1,47 @@
+product_grid_selector:
+  container_class: ProductListing_allProducts__24sl2
+  item_class: ProductListing_productItemWrapper__1AXaV
+  link_path: .//a[@rel="noopener noreferrer"]
+
+categories:
+  roof_tile:
+    &roof_tile_default
+    name: ProductDescription_displayName__ztjNk
+    id: ProductDescription_specText__1SueV
+    size: //*[@id="__next"]/div[2]/div[3]/div[1]/div/div[2]/div/div[2]/div[2]/span
+    weight: //*[@id="__next"]/div[2]/div[3]/div[1]/div/div[2]/div/div[2]/div[3]/span
+    price: ProductPricing_priceAmount__uQ7jS
+    unit: ProductPricing_priceUnit__1Ki0S
+
+  translucent:
+    <<: *roof_tile_default
+    web_url: "https://www.scghome.com/products/subcategory/กระเบื้องโปร่งแสง"
+    
+  ceramic:
+    <<: *roof_tile_default
+    web_url: "https://www.scghome.com/products/subcategory/กระเบื้องหลังคาเซรามิก"
+
+  concrete:
+    <<: *roof_tile_default
+    web_url: "https://www.scghome.com/products/subcategory/กระเบื้องหลังคาคอนกรีต"
+  
+  fiber_cement:
+    <<: *roof_tile_default
+    web_url: "https://www.scghome.com/products/subcategory/กระเบื้องหลังคาไฟเบอร์ซีเมนต์"
+  
+  ventilation:
+    <<: *roof_tile_default
+    web_url: "https://www.scghome.com/products/subcategory/ชุดกระเบื้องระบายอากาศ"
+
+  metal_sheet:
+    <<: *roof_tile_default
+    web_url: "https://www.scghome.com/products/subcategory/หลังคาเมทัลชีท"
+  
+  roofing_equipment:
+    <<: *roof_tile_default
+    web_url: "https://www.scghome.com/products/subcategory/อุปกรณ์ติดตั้งหลังคา"
+
+
+
+
+  
