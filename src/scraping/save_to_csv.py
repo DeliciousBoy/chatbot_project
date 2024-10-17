@@ -28,11 +28,3 @@ def save_product_data_to_csv(product_data_list: list[ProductElements], output_di
     
     # Save the DataFrame to a CSV file
     df.to_csv(output_path, index=False, encoding='utf-8-sig')                                                                                                                                                      
-
-
-def organize_file(raw_dir: str | Path, processed_dir: str | Path):
-    """ 
-    Organize files 
-    
-    """
-    ...

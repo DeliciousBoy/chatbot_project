@@ -15,12 +15,12 @@ def scrape_product_data(driver: WebDriver, product_links: list[str], elements: P
         - elements: An instance of ProductElements dataclass containing XPATH and CLASS_NAME selectors.
 
     Return:
-        A list of ...
+        A list of product data
     """
 
     product_data_list = []
 
-    for link in tqdm(product_links):
+    for link in tqdm(product_links, leave=False):
         driver.get(link)
         product_data = extract_product_data(driver=driver, elements=elements)
         product_data_list.append(product_data)
