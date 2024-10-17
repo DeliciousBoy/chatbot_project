@@ -10,15 +10,18 @@ from src.config import RAW_DATA_DIR
 def main() -> None:  
    driver, wait = setup_driver()
    try:
-      selector, category_config = load_config(config_path='config.yaml', category='ceramic')
-      driver.get(category_config.web_url)
-      scroll_down(driver)
-      product_links = get_all_product_links(driver=driver, selector=selector)
-      product_data_list = scrape_product_data(driver=driver, product_links=product_links, elements=category_config.product_elements)
-      save_product_data_to_csv(product_data_list, output_path=RAW_DATA_DIR)
+      all_categories_config = load_config(config_path='config.yaml')
+      
+      for category_name, (selector, category_config) in all_categories_config.items():   
+         driver.get(category_config.web_url)
+         scroll_down(driver)
+         product_links = get_all_product_links(driver=driver, selector=selector)
+         product_data_list = scrape_product_data(driver=driver, product_links=product_links, 
+                                                elements=category_config.product_elements)
+         save_product_data_to_csv(product_data_list, output_dir=RAW_DATA_DIR, 
+                                 category_name=category_name)
    finally:
       driver.quit()
       
-
 if __name__ == "__main__":
     main()

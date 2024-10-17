@@ -28,41 +28,51 @@ class CategoryConfig:
     product_elements: ProductElements
     web_url: str
 
-def load_config(config_path: Union[str, Path], category: str) -> Tuple[ScraperSelector, CategoryConfig]:
+def load_config(config_path: Union[str, Path]) -> dict:
     """
     Load the YAML configuration file and return a config object.
     """
-    logger.info(f'Loading config from {config_path} for catergory {category}')
+    logger.info(f'Loading config from {config_path}')
 
     try:
         with open(config_path, 'r', encoding='utf-8') as file:
             config = yaml.safe_load(file)
-            # logger.debug(f'YAML content: {config}')
+            # logger.info(f'YAML content: {config}')
 
-        selector = ScraperSelector(
-            container_class=config['product_grid_selector']['container_class'],
-            item_class=config['product_grid_selector']['item_class'],
-            link_path=config['product_grid_selector']['link_path'],
-        )
-
-        if not (category_data := config['categories'].get(category)):
-            logger.error(f'Category "{category}" not found in config.')
-            raise ValueError(f'Category "{category}" not found in config.')
+        # Prepare a dictionary to store all category configurations
+        all_categories_config = {}
         
-        category_config = CategoryConfig(
-            product_elements=ProductElements(
-                name=category_data['name'],
-                id=category_data['id'],
-                price=category_data.get('price'),
-                unit=category_data.get('unit'),
-                size=category_data.get('size'),
-                weight=category_data.get('weight'),
-            ),
-            web_url=category_data['web_url']
+        for category_name, category_data in config['categories'].items():
+            # logger.info(f"Loading configuration for category: {category_name}")
             
-        )
-        logger.info(f'Successfully loaded configuration for category {category}')
-        return selector, category_config
+            required_keys = ['name', 'id', 'price', 'unit', 'web_url']
+            missing_keys = [key for key in required_keys if key not in category_data]
+
+            if missing_keys:
+                # logger.warning(f"Category {category_name} is missing the following keys: {missing_keys}. Skipping this category.")
+                continue
+            
+            selector = ScraperSelector(
+                container_class=config['product_grid_selector']['container_class'],
+                item_class=config['product_grid_selector']['item_class'],
+                link_path=config['product_grid_selector']['link_path'],
+            )
+
+            category_config = CategoryConfig(
+                product_elements=ProductElements(
+                    name=category_data['name'],
+                    id=category_data['id'],
+                    price=category_data.get('price'),
+                    unit=category_data.get('unit'),
+                    size=category_data.get('size'),
+                    weight=category_data.get('weight'),
+                ),
+                web_url=category_data['web_url']
+                
+            )
+            # logger.info(f'Successfully loaded configuration for category {category}')
+            all_categories_config[category_name] = (selector, category_config)
+        return all_categories_config
 
     except FileNotFoundError:
         logger.error(f'Error: the file {config_path} was not found')

@@ -26,5 +26,7 @@ def get_all_product_links(driver: WebDriver, selector: ScraperSelector) -> list[
         return links
 
     except (NoSuchElementException, TimeoutException) as e:
-        logger.error(f'An error occurred while trying to find elements: {e}')
+        # logger.error(f'An error occurred while trying to find elements: {e}')
         return []
+    
+
