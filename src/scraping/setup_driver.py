@@ -23,16 +23,18 @@ def setup_driver(headless: bool = True) -> Tuple[Optional[WebDriver], Optional[W
 
     options = Options()
     if headless:
-        options.add_argument("--headless=new") # Use 'new' flag for the latest headless mode 
-        options.add_argument("--disable-gpu")  # Disable GPU acceleration (useful in headless mode)
-        options.add_argument("--no-sandbox")   # Required for some environments, such as Docker
-        options.add_argument("--disable-dev-shm-usage") # Overcome limited resource problems
-        options.add_experimental_option("excludeSwitches", ["enable-logging"]) # Disabled log
+        options.add_argument('--headless')
+        options.add_argument('--disable-gpu')
+        options.add_argument('--no-sandbox')  # Required for Docker
+        options.add_argument('--disable-dev-shm-usage')  # Overcome limited resource problems
+        options.add_argument('--disable-software-rasterizer')  # Disable software rendering
+        options.add_argument('--remote-debugging-port=9222')  # For debugging in headless mode
         
     try:
         driver = webdriver.Chrome(options=options)
+        # driver = webdriver.Chrome(options=options)
         wait = WebDriverWait(driver, 10)
-        logger.info('Chrome driver setup successfully.')
+        # logger.info('Chrome driver setup successfully.')
         return driver, wait
     
     except WebDriverException as e:
