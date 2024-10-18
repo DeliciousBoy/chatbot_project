@@ -11,7 +11,7 @@ def safe_find_element(driver: WebDriver, by: By, value: str) -> str:
     try:
         return driver.find_element(by, value).text
     except NoSuchElementException:
-        # logger.warning(f'Element not found: {value}')
+        logger.warning(f'Element not found: {value}')
         return 'N/A'
 
 

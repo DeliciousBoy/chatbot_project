@@ -6,6 +6,7 @@ from src.scraping.config_loader import load_config
 from src.scraping.product_scraper import scrape_product_data
 from src.scraping.save_to_csv import save_product_data_to_csv
 from src.config import RAW_DATA_DIR
+from src.utils.logging_config import logger
 
 def main() -> None:  
    driver, wait = setup_driver()
@@ -20,6 +21,8 @@ def main() -> None:
                                                 elements=category_config.product_elements)
          save_product_data_to_csv(product_data_list, output_dir=RAW_DATA_DIR, 
                                  category_name=category_name)
+         logger.success(f"Scraping completed for category: {category_name:<20}| "
+                        f"Total products scraped: {len(product_data_list):<10}")
    finally:
       driver.quit()
       

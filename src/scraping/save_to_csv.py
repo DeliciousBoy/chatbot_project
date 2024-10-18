@@ -4,6 +4,7 @@ from datetime import datetime
 
 import pandas as pd
 
+
 from src.scraping.config_loader import ProductElements
 
 def save_product_data_to_csv(product_data_list: list[ProductElements], output_dir: str, category_name: str) -> None:
@@ -28,3 +29,4 @@ def save_product_data_to_csv(product_data_list: list[ProductElements], output_di
     
     # Save the DataFrame to a CSV file
     df.to_csv(output_path, index=False, encoding='utf-8-sig')                                                                                                                                                      
+    

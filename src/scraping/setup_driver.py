@@ -27,7 +27,8 @@ def setup_driver(headless: bool = True) -> Tuple[Optional[WebDriver], Optional[W
         options.add_argument("--disable-gpu")  # Disable GPU acceleration (useful in headless mode)
         options.add_argument("--no-sandbox")   # Required for some environments, such as Docker
         options.add_argument("--disable-dev-shm-usage") # Overcome limited resource problems
-    
+        options.add_experimental_option("excludeSwitches", ["enable-logging"]) # Disabled log
+        
     try:
         driver = webdriver.Chrome(options=options)
         wait = WebDriverWait(driver, 10)

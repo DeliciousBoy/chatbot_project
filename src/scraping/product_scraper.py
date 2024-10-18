@@ -1,4 +1,4 @@
-from tqdm import tqdm
+from loguru import logger
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from src.scraping.config_loader import ProductElements
@@ -20,9 +20,8 @@ def scrape_product_data(driver: WebDriver, product_links: list[str], elements: P
 
     product_data_list = []
 
-    for link in tqdm(product_links, leave=False):
+    for link in product_links:
         driver.get(link)
         product_data = extract_product_data(driver=driver, elements=elements)
         product_data_list.append(product_data)
-    
     return product_data_list
