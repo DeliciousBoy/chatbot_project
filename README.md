@@ -4,8 +4,27 @@
     <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
 </a>
 
-None
+Build the Docker Image 
 
+```bash
+docker-compose build
+```
+
+Run the Container in background
+```bash
+docker-compose up -d
+```
+
+Check Running Containers
+```bash
+docker ps
+```
+
+View Logs To check the logs
+```bash
+docker-compose logs -f
+
+```
 ## Project Organization
 
 ```
