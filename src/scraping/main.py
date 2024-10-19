@@ -11,6 +11,7 @@ from src.utils.logging_config import logger
 def main() -> None:  
    driver, wait = setup_driver()
    try:
+      
       all_categories_config = load_config(config_path='config.yaml')
       
       for category_name, (selector, category_config) in all_categories_config.items():   
@@ -24,6 +25,10 @@ def main() -> None:
          logger.success(f"Scraping completed for category: {category_name:<20}| "
                         f"Total products scraped: {len(product_data_list):<10}")
    finally:
+      
+      with open("/app/data/raw/scraping_done.flag", "w") as f:
+         f.write("Scraping Completed\n")
+         
       driver.quit()
       
 if __name__ == "__main__":
