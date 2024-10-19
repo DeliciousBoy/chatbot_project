@@ -1,4 +1,3 @@
-version: '3'
 services:
   scraper:
     build: .
@@ -10,3 +9,16 @@ services:
       - ./logs:/app/logs           # Mount logs folder to Docker container
     restart: unless-stopped
     entrypoint: ["sh", "-c", "while true; do python src/scraping/main.py; sleep 3 86400; done"]
+
+  data_cleaner:
+    build: .
+    container_name: data-cleaner-container
+    depends_on:
+      - scraper
+    environment:
+        - TZ=Asia/Bangkok
+    volumes:
+        - ./data/raw:/app/data/raw          # Mount raw data folder to Docker container
+        - ./data/processed:/app/data/processed  # Mount processed data folder to Docker container
+    restart: unless-stopped
+    entrypoint: ["sh", "-c", "while [ ! -f /app/data/raw/scraping_done.flag ]; do sleep 10; done; python src/utils/data_manager.py"]
