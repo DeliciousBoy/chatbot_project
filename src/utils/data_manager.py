@@ -86,7 +86,7 @@ def update_product(category_data: dict[str, list[pd.DataFrame]], processed_dir: 
     # Concatenate all combined data into a single DataFrame and save to a file
     final_combined_df = pd.DataFrame({'combined_text': pd.concat(all_combined_data, ignore_index=True)})
     final_combined_file = processed_dir / 'product_data.csv'
-    final_combined_df.to_csv(final_combined_file, index=False, encoding='utf-8-sig')
+    final_combined_df.to_csv(final_combined_file, index=False, header=False,encoding='utf-8-sig')
     
 def embedding(input_file: Path | str, output_dir: Path | str):
     """  Create embeddings from input CSV file using a specified model and save the embeddings. """

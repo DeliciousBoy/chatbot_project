@@ -13,9 +13,9 @@ categories:
     price: ProductPricing_priceAmount__uQ7jS
     unit: ProductPricing_priceUnit__1Ki0S
 
-  translucent:
-    <<: *roof_tile_default
-    web_url: "https://www.scghome.com/products/subcategory/กระเบื้องโปร่งแสง"
+  # translucent:
+  #   <<: *roof_tile_default
+  #   web_url: "https://www.scghome.com/products/subcategory/กระเบื้องโปร่งแสง"
     
   ceramic:
     <<: *roof_tile_default
@@ -28,7 +28,7 @@ categories:
   fiber_cement:
     <<: *roof_tile_default
     web_url: "https://www.scghome.com/products/subcategory/กระเบื้องหลังคาไฟเบอร์ซีเมนต์"
-  
+    
   ventilation:
     <<: *roof_tile_default
     web_url: "https://www.scghome.com/products/subcategory/ชุดกระเบื้องระบายอากาศ"
@@ -37,9 +37,9 @@ categories:
     <<: *roof_tile_default
     web_url: "https://www.scghome.com/products/subcategory/หลังคาเมทัลชีท"
   
-  roofing_equipment:
-    <<: *roof_tile_default
-    web_url: "https://www.scghome.com/products/subcategory/อุปกรณ์ติดตั้งหลังคา"
+  # roofing_equipment:
+  #   <<: *roof_tile_default
+  #   web_url: "https://www.scghome.com/products/subcategory/อุปกรณ์ติดตั้งหลังคา"
 
 
 
