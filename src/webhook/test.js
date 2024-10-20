@@ -12,26 +12,22 @@ const fullPath = path.join(__dirname,'functions','utils','gemini.py');
 const userInput = "มีกระเบื้องอะไรบ้าง";
 // เรียกใช้งาน Python script พร้อมส่ง userInput
 
-// exec(`python ${fullPath} "${userInput}"`, (error, stdout, stderr) => {
-//     // if (error) {
-//     //     console.error(`Error executing Python script: ${error.message}`);
-//     //     return;
-//     // }
-//     // if (stderr) {
-//     //     console.error(`Python error: ${stderr}`);
-//     //     return;
-//     // }
+exec(`python ${fullPath} "${userInput}"`, (error, stdout, stderr) => {
+    // if (error) {
+    //     console.error(`Error executing Python script: ${error.message}`);
+    //     return;
+    // }
+    // if (stderr) {
+    //     console.error(`Python error: ${stderr}`);
+    //     return;
+    // }
 
-//     // แปลง output จาก Python script (ในรูปแบบ JSON) ให้เป็น JavaScript object
-//     try {
-//          var output = JSON.parse(stdout);
-//         // resolve(output.result); 
-//         console.log(output.result);
-//     } catch (parseError) {
-//         console.error(`Error parsing JSON: ${parseError.message}`);
-//     }
-// });
-
-const CAT = process.env.CHANNEL_ACCESS_TOKEN;
-const NT = process.env.NOTIFY_TOKEN;
-console.log(CAT)
+    // แปลง output จาก Python script (ในรูปแบบ JSON) ให้เป็น JavaScript object
+    try {
+         var output = JSON.parse(stdout);
+        // resolve(output.result); 
+        console.log(output.result);
+    } catch (parseError) {
+        console.error(`Error parsing JSON: ${parseError.message}`);
+    }
+});
