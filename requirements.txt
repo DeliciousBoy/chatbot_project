@@ -1,4 +1,6 @@
-pythainlp
+flagembedding
+peft
+openpyxl
 selenium
 loguru
 pyyaml
