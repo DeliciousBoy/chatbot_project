@@ -2,11 +2,13 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from loguru import logger
+import sys
 
 # Load environment variables from .env file if it exists
 load_dotenv()
 
 # Paths
+# sys.path.append(str(Path(__file__).resolve().parent.parent))
 PROJ_ROOT = Path(__file__).resolve().parents[1]
 # logger.info(f"PROJ_ROOT path is: {PROJ_ROOT}")
 
