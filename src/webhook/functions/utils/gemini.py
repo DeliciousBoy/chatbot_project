@@ -18,15 +18,16 @@ BGEmodel = BGEM3FlagModel('BAAI/bge-m3',use_fp16=True)
 
 genai.configure(api_key=os.getenv("API_KEY"))
 generation_config = {
-        "temperature": 1,
-        "top_p": 0.95,
-        "top_k": 128,
+        "temperature": 0.3,
+        "top_p": 0.50,
+        "top_k": 32,
         "max_output_tokens": 8192,
         "response_mime_type": "text/plain",
     }
 
 version = 'models/gemini-1.5-flash' # @param ["models/gemini-1.5-flash", "models/gemini-1.5-pro", "models/gemini-1.0-pro"]
 genaimodel = genai.GenerativeModel(version,generation_config=generation_config)
+Sales_Expert = genaimodel.start_chat(history=[])
 
 def create_prompt(user_input):
     raw_product_article = pd.read_csv(PROCESSED_DATA_DIR / "product_data.csv", header=None)
@@ -52,15 +53,20 @@ def create_prompt(user_input):
     # print(sorted_indices)
     relative_doc = [product_article[i] for i in sorted_indices[:150]]
             
-    prompt = f"""คุณคือ Sales Expert ที่ชำนาญด้านการเป็นผู้ช่วยในการขายและเป็นผู้เชี่ยวชาญเกี่ยวกับสินค้าทางแบรนด์ SCG คุณสามารถห้คําปรึกษาเกี่ยวกับผลิตภัณฑ์ต่างๆ ของเอสซีจีได้อย่างถูกต้องและรวดเร็ว โดยใช้แค่ข้อมูลที่ส่งให้เท่านั้น ห้ามเอาข้อมูลจากแหล่งอื่น
+    prompt = f"""คุณคือ ผู้ที่ชำนาญด้านการเป็นผู้ช่วยในการขายและเป็นผู้เชี่ยวชาญเกี่ยวกับสินค้า คุณสามารถให้ข้อมูลและให้คําปรึกษาเกี่ยวกับผลิตภัณฑ์ต่างๆ
+    
+คำถาม : {user_input}
+ข้อมูลที่เกี่ยวข้อง : {relative_doc}
 
-    คำถาม : {user_input}
-    ข้อมูลที่เกี่ยวข้อง : {relative_doc} 
-    """
+โปรดให้คำตอบโดย:
+- เน้นคำตอบที่ตรงประเด็น
+- แนะนำสินค้าให้เหมาะสมกับความต้องการของลูกค้า
+- หากเป็นไปได้ ให้เปรียบเทียบกับสินค้าประเภทเดียวกันเพื่อช่วยให้ลูกค้าตัดสินใจได้ง่ายขึ้น
+- ตอบด้วยภาษาที่เป็นมิตรและชัดเจน
+"""
     return prompt
 
 def sale_ex(prompt):
-    Sales_Expert = genaimodel.start_chat(history=[])
 # prompt = "เอสซีจี รุ่นคลาสสิคไทย มีสีอะไรบ้าง แล้วแต่ละอันราคาเท่าไร"
     Sales_Expert.send_message(prompt)
 # model.count_tokens(prompt)
