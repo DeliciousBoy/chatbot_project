@@ -12,8 +12,8 @@ from googleapiclient.discovery import build
 from google.oauth2 import service_account
 import io
 from googleapiclient.http import MediaIoBaseDownload
-import threading
-import time
+from datetime import datetime
+import schedule
 
 load_dotenv()
 sys.path.append(r"C:\Users\ASUS\OneDrive\เอกสาร\GitHub\chatbot_project")
@@ -23,9 +23,6 @@ BGEmodel = BGEM3FlagModel('BAAI/bge-m3',use_fp16=True)
 SCOPES = ['https://www.googleapis.com/auth/drive']
 SERVICE_ACCOUNT_FILE = PROCESSED_DATA_DIR /'SERVICE_ACCOUNT_FILE.json'
 PARENT_FOLDER_ID = os.getenv("PARENT_FOLDER_ID")
-
-product_article_cache = None
-embeddings_2_loaded_cache = None
 
 genai.configure(api_key=os.getenv("API_KEY"))
 generation_config = {
@@ -77,10 +74,16 @@ def load_data():
     download_file(PROCESSED_DATA_DIR / "product_data.csv")
     download_file(PROCESSED_DATA_DIR / "product_data_embeddings.pkl")
     
-def schedule_data_reload(interval=10):  # 7 วัน = 604800 วินาที
-    while True:
-        time.sleep(interval)
+def task_every_1th():
+    # ตรวจสอบว่าปัจจุบันเป็นวันที่ 29 หรือไม่
+    today = datetime.now().day
+    if today == 1:
+        # print("It's the 29th! Running the scheduled task.")
+        # เรียกใช้ฟังก์ชันของคุณที่นี่
         load_data()
+    else:
+        # print("Today is not the 29th. Task skipped.")
+        return
 
 def create_prompt(user_input):
     raw_product_article = pd.read_csv(PROCESSED_DATA_DIR / "product_data.csv", header=None)
@@ -126,10 +129,11 @@ def sale_ex(prompt):
     respon = Sales_Expert.last.text
     return respon
 
-
 if __name__ == "__main__":
-    threading.Thread(target=schedule_data_reload, daemon=True).start()
+    task_every_1th()
     # อ่าน input จาก Node.js ผ่านทาง argument ที่ส่งมา
+    # schedule.every().day.at("13:51").do(task_every_29th)
+    # schedule.run_pending()
     input_data = sys.argv[1] 
     # input_data = 'ขอราคาของกระเบื้อง'
     # เรียกใช้งานฟังก์ชัน
