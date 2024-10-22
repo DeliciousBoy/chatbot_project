@@ -5,9 +5,8 @@ import pandas as pd
 import pickle
 from loguru import logger
 from FlagEmbedding import BGEM3FlagModel
-
+ 
 from src.config import RAW_DATA_DIR, PROCESSED_DATA_DIR
-
 
 def clean_file(file_path: Path | str) -> pd.DataFrame:
     """ Read a CSV file and clean the data """
@@ -82,12 +81,12 @@ def update_product(category_data: dict[str, list[pd.DataFrame]], processed_dir: 
         # Combine each row's relevant columns into a single string
         combined_df['combined_text'] = combined_df.apply(combine_columns, axis=1)
         all_combined_data.append(combined_df['combined_text'])
-        
+         
     # Concatenate all combined data into a single DataFrame and save to a file
     final_combined_df = pd.DataFrame({'combined_text': pd.concat(all_combined_data, ignore_index=True)})
     final_combined_file = processed_dir / 'product_data.csv'
     final_combined_df.to_csv(final_combined_file, index=False, header=False,encoding='utf-8-sig')
-    
+     
 def embedding(input_file: Path | str, output_dir: Path | str):
     """  Create embeddings from input CSV file using a specified model and save the embeddings. """
     
@@ -105,12 +104,12 @@ def embedding(input_file: Path | str, output_dir: Path | str):
     except Exception as e:
         logger.error(f'Error occurred during embedding | {e}')
 
+
 def main() -> None:
-    
     category_data = categorize_files(RAW_DATA_DIR)
     update_product(category_data, PROCESSED_DATA_DIR) 
     embedding(PROCESSED_DATA_DIR / 'product_data.csv', PROCESSED_DATA_DIR)
-    
+ 
     flag_file_path = "/app/data/raw/scraping_done.flag"
     if os.path.exists(flag_file_path):
         os.remove(flag_file_path)
