@@ -8,13 +8,24 @@ import sys
 import os
 from dotenv import load_dotenv
 from pathlib import Path
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
+import io
+from googleapiclient.http import MediaIoBaseDownload
+import threading
+import time
 
 load_dotenv()
 sys.path.append(r"C:\Users\ASUS\OneDrive\เอกสาร\GitHub\chatbot_project")
 from src.config import RAW_DATA_DIR,PROCESSED_DATA_DIR
 
 BGEmodel = BGEM3FlagModel('BAAI/bge-m3',use_fp16=True)
+SCOPES = ['https://www.googleapis.com/auth/drive']
+SERVICE_ACCOUNT_FILE = PROCESSED_DATA_DIR /'SERVICE_ACCOUNT_FILE.json'
+PARENT_FOLDER_ID = os.getenv("PARENT_FOLDER_ID")
 
+product_article_cache = None
+embeddings_2_loaded_cache = None
 
 genai.configure(api_key=os.getenv("API_KEY"))
 generation_config = {
@@ -28,6 +39,48 @@ generation_config = {
 version = 'models/gemini-1.5-flash' # @param ["models/gemini-1.5-flash", "models/gemini-1.5-pro", "models/gemini-1.0-pro"]
 genaimodel = genai.GenerativeModel(version,generation_config=generation_config)
 Sales_Expert = genaimodel.start_chat(history=[])
+
+def authenticate():
+    creds = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    return creds
+def find_file(service, file_name):
+    query = f"name='{file_name}' and '{PARENT_FOLDER_ID}' in parents and trashed=false"
+    results = service.files().list(q=query, spaces='drive', fields="files(id, name)").execute()
+    files = results.get('files', [])
+    return files[0] if files else None
+
+def download_file(destination_path):
+    creds = authenticate()
+    service = build('drive', 'v3', credentials=creds)
+    # Extract the file name from the destination path
+    file_name = os.path.basename(destination_path)
+    
+    existing_file = find_file(service, file_name)
+    if not existing_file:
+        # print(f"File '{file_name}' not found in the specified folder.")
+        return
+
+    file_id = existing_file['id']
+    # Download the file from Google Drive
+    request = service.files().get_media(fileId=file_id)
+    fh = io.FileIO(destination_path, 'wb')  # Open the destination file for writing
+
+    downloader = MediaIoBaseDownload(fh, request)
+    done = False
+    while not done:
+        status, done = downloader.next_chunk()
+        # print(f"Download progress: {int(status.progress() * 100)}%")
+
+    print(f"File downloaded to {destination_path}")
+    
+def load_data():
+    download_file(PROCESSED_DATA_DIR / "product_data.csv")
+    download_file(PROCESSED_DATA_DIR / "product_data_embeddings.pkl")
+    
+def schedule_data_reload(interval=10):  # 7 วัน = 604800 วินาที
+    while True:
+        time.sleep(interval)
+        load_data()
 
 def create_prompt(user_input):
     raw_product_article = pd.read_csv(PROCESSED_DATA_DIR / "product_data.csv", header=None)
@@ -75,13 +128,14 @@ def sale_ex(prompt):
 
 
 if __name__ == "__main__":
+    threading.Thread(target=schedule_data_reload, daemon=True).start()
     # อ่าน input จาก Node.js ผ่านทาง argument ที่ส่งมา
     input_data = sys.argv[1] 
     # input_data = 'ขอราคาของกระเบื้อง'
     # เรียกใช้งานฟังก์ชัน
     prompt = create_prompt(input_data)
     result = sale_ex(prompt)
-    # print(prompt)
+    # print(result)
     # ส่งผลลัพธ์กลับไปในรูปแบบ JSON
     print(json.dumps({"result": result}))
     
