@@ -8,8 +8,8 @@ services:
       - ./data/raw:/app/data/raw  # Mount local folder to Docker container
       - ./logs:/app/logs           # Mount logs folder to Docker container
     restart: unless-stopped
-    # entrypoint: ["sh", "-c", "while true; do python src/scraping/main.py; sleep 3 86400; done"]
-    entrypoint: ["sh", "-c", "if [ ! -f /app/data/raw/scraping_done.flag ]; then python src/scraping/main.py; fi; sleep 3 86400"]
+    entrypoint: ["sh", "-c", "while true; do python src/scraping/main.py; sleep 3 86400; done"]
+    # entrypoint: ["sh", "-c", "if [ ! -f /app/data/raw/scraping_done.flag ]; then python src/scraping/main.py; fi; sleep 3 86400"]
 
   data_cleaner:
     build: .

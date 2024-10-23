@@ -4,7 +4,16 @@ FROM python:3.11.9
 WORKDIR /app
 
 # Copy all project files to the /app directory inside the container
-COPY . /app
+# COPY . /app
+COPY ./src /app/src
+COPY ./data /app/data
+COPY ./logs /app/logs
+COPY .env /app/
+COPY config.yaml /app/
+COPY requirements.txt /app/
+COPY pyproject.toml /app/
+COPY setup.cfg /app/
+COPY README.md /app/
 
 # Install required dependencies from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt

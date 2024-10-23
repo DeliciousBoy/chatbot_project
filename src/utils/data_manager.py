@@ -5,8 +5,63 @@ import pandas as pd
 import pickle
 from loguru import logger
 from FlagEmbedding import BGEM3FlagModel
- 
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
+from googleapiclient.http import MediaFileUpload
+
 from src.config import RAW_DATA_DIR, PROCESSED_DATA_DIR
+
+
+SCOPES = ['https://www.googleapis.com/auth/drive']
+SERVICE_ACCOUNT_FILE = PROCESSED_DATA_DIR /'SERVICE_ACCOUNT_FILE.json'
+# PARENT_FOLDER_ID = os.getenv("PARENT_FOLDER_ID")
+PARENT_FOLDER_ID = "150dFMxPwLFsuaIABuldjxUeeXgSYMyMx"
+
+
+def authenticate():
+    creds = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    return creds
+
+def find_file(service, file_name):
+    query = f"name='{file_name}' and '{PARENT_FOLDER_ID}' in parents and trashed=false"
+    results = service.files().list(q=query, spaces='drive', fields="files(id, name)").execute()
+    files = results.get('files', [])
+    return files[0] if files else None
+
+def upload_file(file_path):
+    # ใช้ os.path.basename เพื่อดึงชื่อไฟล์จากพาธที่กำหนด
+    file_name = os.path.basename(file_path)
+
+    creds = authenticate()
+    service = build('drive', 'v3', credentials=creds)
+
+    # Check if the file exists in Google Drive
+    existing_file = find_file(service, file_name)
+
+    file_metadata = {
+        'name': file_name,
+        'parents': [PARENT_FOLDER_ID]
+    }
+
+    media = MediaFileUpload(file_path)
+
+    if existing_file:
+        # Update the file if it exists
+        file_id = existing_file['id']
+        updated_file = service.files().update(
+            fileId=file_id,
+            media_body=media
+        ).execute()
+        print(f"File '{file_name}' updated successfully. File ID: {file_id}")
+    else:
+        # Upload a new file if it doesn't exist
+        new_file = service.files().create(
+            body=file_metadata,
+            media_body=media,
+            fields='id'
+        ).execute()
+        print(f"File '{file_name}' uploaded successfully. File ID: {new_file.get('id')}")
+
 
 def clean_file(file_path: Path | str) -> pd.DataFrame:
     """ Read a CSV file and clean the data """
@@ -109,7 +164,11 @@ def main() -> None:
     category_data = categorize_files(RAW_DATA_DIR)
     update_product(category_data, PROCESSED_DATA_DIR) 
     embedding(PROCESSED_DATA_DIR / 'product_data.csv', PROCESSED_DATA_DIR)
- 
+    
+    for file in PROCESSED_DATA_DIR.iterdir():
+        if file.suffix in ['.csv', '.pkl']:
+            upload_file(file)
+            
     flag_file_path = "/app/data/raw/scraping_done.flag"
     if os.path.exists(flag_file_path):
         os.remove(flag_file_path)
