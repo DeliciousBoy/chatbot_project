@@ -113,7 +113,6 @@ def main() -> None:
     flag_file_path = "/app/data/raw/scraping_done.flag"
     if os.path.exists(flag_file_path):
         os.remove(flag_file_path)
-    
 
 if __name__ == "__main__":
     main()
