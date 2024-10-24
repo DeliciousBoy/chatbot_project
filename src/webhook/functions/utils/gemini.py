@@ -102,7 +102,7 @@ def create_prompt(user_input):
     max_value = similarity[max_value_index]
     # print(max_value_index)
 # หาค่าที่น้อยกว่าหรือเท่ากับ 10% ของค่ามากสุด และเก็บ index ของมัน
-    threshold = max_value * 0.85
+    threshold = max_value * 0.90
     indices_below_threshold = np.where(similarity >= threshold)[0]
     # print(indices_below_threshold)
     sorted_indices = indices_below_threshold[np.argsort(-similarity[indices_below_threshold])]
