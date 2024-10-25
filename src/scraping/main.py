@@ -18,10 +18,19 @@ def main() -> None:
          driver.get(category_config.web_url)
          scroll_down(driver)
          product_links = get_all_product_links(driver=driver, selector=selector)
-         product_data_list = scrape_product_data(driver=driver, product_links=product_links, 
-                                                elements=category_config.product_elements)
-         save_product_data_to_csv(product_data_list, output_dir=RAW_DATA_DIR, 
-                                 category_name=category_name)
+         
+         product_data_list = scrape_product_data(
+            driver=driver, 
+            product_links=product_links, 
+            elements=category_config.product_elements
+         )
+         
+         save_product_data_to_csv(
+            product_data_list, 
+            output_dir=RAW_DATA_DIR,
+            category_name=category_name
+         )
+         
          logger.success(f"Scraping completed for category: {category_name:<20}| "
                         f"Total products scraped: {len(product_data_list):<10}")
    finally:
