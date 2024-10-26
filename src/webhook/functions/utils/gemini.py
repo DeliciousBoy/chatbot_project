@@ -12,7 +12,7 @@ from googleapiclient.discovery import build
 from google.oauth2 import service_account
 import io
 from googleapiclient.http import MediaIoBaseDownload
-from datetime import datetime
+from datetime import datetime,time
 import schedule
 
 load_dotenv()
@@ -74,10 +74,11 @@ def load_data():
     download_file(PROCESSED_DATA_DIR / "product_data.csv")
     download_file(PROCESSED_DATA_DIR / "product_data_embeddings.pkl")
     
+    
 def task_every_1th():
     # ตรวจสอบว่าปัจจุบันเป็นวันที่ 29 หรือไม่
-    today = datetime.now().day
-    if today == 1:
+    now = datetime.now()
+    if now.day == 1 and time(12, 0) <= now.time() <= time(13, 0):
         # print("It's the 29th! Running the scheduled task.")
         # เรียกใช้ฟังก์ชันของคุณที่นี่
         load_data()
@@ -86,14 +87,20 @@ def task_every_1th():
         return
 
 def create_prompt(user_input):
-    raw_product_article = pd.read_csv(PROCESSED_DATA_DIR / "product_data.csv", header=None)
+    raw_product_article_path = PROCESSED_DATA_DIR / "product_data.csv"
+    if not raw_product_article_path.exists():
+        download_file(raw_product_article_path)
+    raw_product_article = pd.read_csv(raw_product_article_path, header=None)
     product_article = raw_product_article.values.tolist()
 
     embeddings_1 = BGEmodel.encode(user_input, 
                             batch_size=8, 
                             max_length=1200,
                             )['dense_vecs']
-    with open(PROCESSED_DATA_DIR / "product_data_embeddings.pkl", 'rb') as f:
+    embeddings_data = PROCESSED_DATA_DIR / "product_data_embeddings.pkl"
+    if not embeddings_data.exists():
+        download_file(embeddings_data)
+    with open(embeddings_data, 'rb') as f:
         embeddings_2_loaded = pickle.load(f)
     similarity = embeddings_1 @ embeddings_2_loaded.T
 
@@ -135,7 +142,7 @@ if __name__ == "__main__":
     # schedule.every().day.at("13:51").do(task_every_29th)
     # schedule.run_pending()
     input_data = sys.argv[1] 
-    # input_data = 'ขอราคาของกระเบื้อง'
+    # input_data = 'ขอราคาของกระเบื้องสีแดง'
     # เรียกใช้งานฟังก์ชัน
     prompt = create_prompt(input_data)
     result = sale_ex(prompt)
