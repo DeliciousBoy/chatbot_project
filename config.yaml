@@ -2,7 +2,7 @@ product_grid_selector:
   container_class: ProductListing_allProducts__24sl2
   item_class: ProductListing_productItemWrapper__1AXaV
   link_path: .//a[@rel="noopener noreferrer"]
-
+ 
 categories:
   roof_tile:
     &roof_tile_default

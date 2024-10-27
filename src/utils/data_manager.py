@@ -85,7 +85,7 @@ def clean_file(file_path: Path | str) -> pd.DataFrame:
             isinstance(row['size'], str) and row['size'].endswith('ซม.') and
             (pd.isna(row['weight']) or (isinstance(row['weight'], str) and row['weight'].endswith('กก.')))
         ), axis=1)]
-
+    print(f"Data cleaning completed for file: {file_path.title()}")
     return df
 
 def extract_category_name(file_path: Path | str) -> str:
