@@ -114,6 +114,7 @@ exports.webhook = onRequest(async (req, res) => {
               return res.end();
             } else if (userMode == "bot") {
                 let question = event.message.text;
+                // console.log(event.message.id)
                 await line.loading(userId);
                 const fullPath = path.join(__dirname,'utils','gemini.py');
                 // เรียกใช้งาน Python script พร้อมส่ง userInput

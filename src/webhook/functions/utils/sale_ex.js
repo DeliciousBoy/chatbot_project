@@ -13,14 +13,17 @@ const generationConfig = {
 
 // Define model version
 const modelVersion = 'models/gemini-1.5-flash'; // Options: "models/gemini-1.5-flash", "models/gemini-1.5-pro", "models/gemini-1.0-pro"
-
+const model = genAI.getGenerativeModel({ model: modelVersion,generationConfig});
+const history = [];
 // Initialize chat with specified model and config
 // const chat = async (prompt) => {
-const chat = async (prompt) => {   
-    const model = genAI.getGenerativeModel({ model: modelVersion,generationConfig});
-    const chatSession = model.startChat({ history: [] });
+const chat = async (prompt) => { 
+    let chatSession = model.startChat({ history });
     const result = await chatSession.sendMessage(prompt);
-    // console.log(result.response.text());
+    history.forEach(message => {
+        console.log("Role:", message.role);
+        console.log("Parts:", message.parts);
+    });
     return result.response.text();
 };
 
