@@ -7,7 +7,8 @@ const firestore = require("./utils/firestore");
 const NodeCache = require("node-cache");
 const { exec } = require('child_process');
 const fs = require('fs');
-const path = require('path');
+const path = require('path'); 
+const sale_ex = require("./utils/sale_ex");
 const myCache = new NodeCache();
 
 exports.webhook = onRequest(async (req, res) => {
@@ -128,7 +129,23 @@ exports.webhook = onRequest(async (req, res) => {
 
                 // แปลง output จาก Python script (ในรูปแบบ JSON) ให้เป็น JavaScript object
                     try {
-                        const msg = JSON.parse(stdout);
+                      var output = JSON.parse(stdout);
+                      sale_ex.chat(output.result).then((response) => {
+                 const chat_response= response;
+                 line.reply(replyToken, [
+                  {
+                    type: "text",
+                    sender: {
+                      name: "Gemini",
+                      iconUrl: "https://wutthipong.info/images/geminiicon.png",
+                    },
+                    text: chat_response,
+                  },
+                ]);
+
+             }).catch((error) => {
+                 console.error("Error:", error);
+             });
                         // console.log(msg.result);
                 //     } catch (parseError) {
                 //         console.error(`Error parsing JSON: ${parseError.message}`);
@@ -157,16 +174,16 @@ exports.webhook = onRequest(async (req, res) => {
               //     },
               //   ]);
               // } else {
-                line.reply(replyToken, [
-                  {
-                    type: "text",
-                    sender: {
-                      name: "Gemini",
-                      iconUrl: "https://wutthipong.info/images/geminiicon.png",
-                    },
-                    text: msg.result,
-                  },
-                ]);
+                // line.reply(replyToken, [
+                //   {
+                //     type: "text",
+                //     sender: {
+                //       name: "Gemini",
+                //       iconUrl: "https://wutthipong.info/images/geminiicon.png",
+                //     },
+                //     text: msg.result,
+                //   },
+                // ]);
               // }
             } catch (parseError) {
               console.error(`Error parsing JSON: ${parseError.message}`);

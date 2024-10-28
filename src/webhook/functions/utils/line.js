@@ -54,7 +54,7 @@ const loading = async (userId) => {
       headers: LINE_HEADER,
       data: { chatId: userId, loadingSeconds: 30},
     });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     console.error(error);

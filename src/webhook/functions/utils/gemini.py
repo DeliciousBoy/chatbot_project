@@ -1,7 +1,7 @@
 import pandas as pd 
 import numpy as np
 from FlagEmbedding import BGEM3FlagModel
-import google.generativeai as genai
+# import google.generativeai as genai
 import pickle
 import json
 import sys
@@ -24,18 +24,18 @@ SCOPES = ['https://www.googleapis.com/auth/drive']
 SERVICE_ACCOUNT_FILE = PROCESSED_DATA_DIR /'SERVICE_ACCOUNT_FILE.json'
 PARENT_FOLDER_ID = os.getenv("PARENT_FOLDER_ID")
 
-genai.configure(api_key=os.getenv("API_KEY"))
-generation_config = {
-        "temperature": 0.3,
-        "top_p": 0.50,
-        "top_k": 32,
-        "max_output_tokens": 8192,
-        "response_mime_type": "text/plain",
-    }
+# genai.configure(api_key=os.getenv("API_KEY"))
+# generation_config = {
+#         "temperature": 0.3,
+#         "top_p": 0.50,
+#         "top_k": 32,
+#         "max_output_tokens": 8192,
+#         "response_mime_type": "text/plain",
+#     }
 
-version = 'models/gemini-1.5-flash' # @param ["models/gemini-1.5-flash", "models/gemini-1.5-pro", "models/gemini-1.0-pro"]
-genaimodel = genai.GenerativeModel(version,generation_config=generation_config)
-Sales_Expert = genaimodel.start_chat(history=[])
+# version = 'models/gemini-1.5-flash' # @param ["models/gemini-1.5-flash", "models/gemini-1.5-pro", "models/gemini-1.0-pro"]
+# genaimodel = genai.GenerativeModel(version,generation_config=generation_config)
+# Sales_Expert = genaimodel.start_chat(history=[])
 
 def authenticate():
     creds = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
@@ -129,12 +129,12 @@ def create_prompt(user_input):
 """
     return prompt
 
-def sale_ex(prompt):
-# prompt = "เอสซีจี รุ่นคลาสสิคไทย มีสีอะไรบ้าง แล้วแต่ละอันราคาเท่าไร"
-    Sales_Expert.send_message(prompt)
-# model.count_tokens(prompt)
-    respon = Sales_Expert.last.text
-    return respon
+# def sale_ex(prompt):
+# # prompt = "เอสซีจี รุ่นคลาสสิคไทย มีสีอะไรบ้าง แล้วแต่ละอันราคาเท่าไร"
+#     Sales_Expert.send_message(prompt)
+# # model.count_tokens(prompt)
+#     respon = Sales_Expert.last.text
+#     return respon
 
 if __name__ == "__main__":
     task_every_1th()
@@ -145,10 +145,10 @@ if __name__ == "__main__":
     # input_data = 'ขอราคาของกระเบื้องสีแดง'
     # เรียกใช้งานฟังก์ชัน
     prompt = create_prompt(input_data)
-    result = sale_ex(prompt)
+    # result = sale_ex(prompt)
     # print(result)
     # ส่งผลลัพธ์กลับไปในรูปแบบ JSON
-    print(json.dumps({"result": result}))
+    print(json.dumps({"result": prompt}))
     
     
     
