@@ -2,10 +2,11 @@
 const { exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const sale_ex = require("./utils/sale_ex");
 require('dotenv').config();
 
 // ร่วมเส้นทาง
-const fullPath = path.join(__dirname,'functions','utils','gemini.py');
+const fullPath = path.join(__dirname,'utils','gemini.py');
 // const doubleBackslashPath = fullPath.replace('\' , '\\');
 // ข้อมูล input ที่ต้องการส่งไปยัง Python
 
@@ -25,10 +26,15 @@ exec(`python ${fullPath} "${userInput}"`, (error, stdout, stderr) => {
     // แปลง output จาก Python script (ในรูปแบบ JSON) ให้เป็น JavaScript object
     try {
          var output = JSON.parse(stdout);
+         sale_ex.chat(output.result).then((response) => {
+    const chat2= response;
+    console.log(chat2);
+}).catch((error) => {
+    console.error("Error:", error);
+});
         // resolve(output.result); 
-        console.log(output.result);
+        // console.log(output.result);
     } catch (parseError) {
         console.error(`Error parsing JSON: ${parseError.message}`);
     }
 });
-
