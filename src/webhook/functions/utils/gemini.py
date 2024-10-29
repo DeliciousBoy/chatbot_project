@@ -114,7 +114,7 @@ def create_prompt(user_input):
     # print(indices_below_threshold)
     sorted_indices = indices_below_threshold[np.argsort(-similarity[indices_below_threshold])]
     # print(sorted_indices)
-    relative_doc = [product_article[i] for i in sorted_indices[:10]]
+    relative_doc = [product_article[i] for i in sorted_indices[:150]]
             
     prompt = f"""คุณคือ ผู้ที่ชำนาญด้านการเป็นผู้ช่วยในการขายและเป็นผู้เชี่ยวชาญเกี่ยวกับสินค้า คุณสามารถให้ข้อมูลและให้คําปรึกษาเกี่ยวกับผลิตภัณฑ์ต่างๆ
     
